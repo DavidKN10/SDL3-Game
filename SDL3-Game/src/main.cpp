@@ -1,16 +1,51 @@
 ﻿#include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <iostream>
+
+struct SDLState {
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+};
+
+void cleanup(SDLState &state);
 
 int main(int argc, char *argv[])
 {
+	SDLState state;
+
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
-		std::cout << "Could Not Load" << std::endl;
-		return -1;	
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error initializing SDL3", nullptr);
+		return 1;	
 	}
-	else {	
-		std::cout << "Loaded Successfully!" << std::endl;
-		SDL_Quit();
-		return 0;	
-	}	
+	
+	// create window
+	int width = 800;
+	int height = 600;
+	state.window = SDL_CreateWindow("SDL3 Demo", width, height, 0);
+	if (!state.window) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creatind window", nullptr);
+		cleanup(state);
+		return 0;
+	}
+
+	// start game loop
+	bool running = true;
+	while (running) {
+		SDL_Event event{ 0 };
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_EVENT_QUIT:
+				running = false;
+				break;
+			}
+		}
+	}
+
+	cleanup(state);
+	return 0;
 }
+
+void cleanup(SDLState &state) {
+	SDL_DestroyWindow(state.window);
+	SDL_Quit();
+}
+
