@@ -22,9 +22,17 @@ int main(int argc, char *argv[])
 	int height = 600;
 	state.window = SDL_CreateWindow("SDL3 Demo", width, height, 0);
 	if (!state.window) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creatind window", nullptr);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", nullptr);
 		cleanup(state);
-		return 0;
+		return 1;
+	}
+
+	// create renderer
+	state.renderer = SDL_CreateRenderer(state.window, nullptr);
+	if (!state.renderer) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating renderer", nullptr);
+		cleanup(state);
+		return 1;
 	}
 
 	// start game loop
@@ -38,6 +46,13 @@ int main(int argc, char *argv[])
 				break;
 			}
 		}
+
+		// perform drawing commands
+		SDL_SetRenderDrawColor(state.renderer, 255, 255, 255, 255);
+		SDL_RenderClear(state.renderer);
+
+		// swap buffers and presents
+		SDL_RenderPresent(state.renderer);
 	}
 
 	cleanup(state);
@@ -45,6 +60,7 @@ int main(int argc, char *argv[])
 }
 
 void cleanup(SDLState &state) {
+	SDL_DestroyRenderer(state.renderer);
 	SDL_DestroyWindow(state.window);
 	SDL_Quit();
 }
