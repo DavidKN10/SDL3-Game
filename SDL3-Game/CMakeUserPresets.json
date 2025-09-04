@@ -6,7 +6,7 @@
       "displayName": "x64 Debug (User)",
       "inherits": "x64-debug",
       "cacheVariables": {
-        "CMAKE_PREFIX_PATH": "C:\\vslib\\SDL3-3.2.14"
+        "CMAKE_PREFIX_PATH": "C:\\vslib\\SDL3-3.2.22;C:\\vslib\\SDL3_image-3.2.4"
       }
     }
   ]
