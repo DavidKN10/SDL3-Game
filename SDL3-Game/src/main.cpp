@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	// create window
 	int width = 800;
 	int height = 600;
-	state.window = SDL_CreateWindow("SDL3 Demo", width, height, 0);
+	state.window = SDL_CreateWindow("SDL3 Demo", width, height, SDL_WINDOW_RESIZABLE);
 	if (!state.window) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", nullptr);
 		cleanup(state);
@@ -36,6 +36,11 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	//configure presentation
+	int logicalWidth = 640;
+	int logicalHeight = 320;
+	SDL_SetRenderLogicalPresentation(state.renderer, logicalWidth, logicalHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
 	// load game assets
 	SDL_Texture* idleTexture = IMG_LoadTexture(state.renderer, "SDL3-Game/src/assets/school_girl_idle.png");
 	SDL_SetTextureScaleMode(idleTexture, SDL_SCALEMODE_NEAREST);
@@ -46,9 +51,15 @@ int main(int argc, char *argv[])
 		SDL_Event event{ 0 };
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
-			case SDL_EVENT_QUIT:
+			case SDL_EVENT_QUIT: {
 				running = false;
 				break;
+			}
+			case SDL_EVENT_WINDOW_RESIZED: {
+				width = event.window.data1;
+				height = event.window.data1;
+				break;
+			}
 			}
 		}
 
